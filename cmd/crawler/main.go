@@ -1,32 +1,22 @@
 package main
 
 import (
-	"bytes"
 	"fmt"
+	"time"
 
-	"github.com/PashaMatsk/crawler/internal/fetcher"
-	"github.com/PashaMatsk/crawler/internal/parser"
+	"github.com/PashaMatsk/crawler/internal/crawler"
 )
 
 func main() {
-
-	body, status, err := fetcher.Fetche("https://books.toscrape.com/")
-	if err != nil {
-		fmt.Printf("Ошибка: %v\n", err)
-		return
+	start := time.Now()
+	result := crawler.Crawl("https://books.toscrape.com/", 1)
+	for _, p := range result {
+		if p.Error != "" {
+			fmt.Printf("[%d] ОШИБКА %s: %s\n", p.Depth, p.URL, p.Error)
+			continue
+		}
+		fmt.Printf("[%d] %d %s (ссылок: %d)\n", p.Depth, p.Status, p.URL, len(p.Links))
 	}
-	fmt.Printf("размер: %d, Статус: %d\n", len(body), status)
-
-	links, err := parser.ParserLinks(bytes.NewReader(body))
-	if err != nil {
-		fmt.Println("Ошибка :%v", err)
-	}
-
-	links, err = parser.NormalizeUrl("https://books.toscrape.com/", links)
-	if err != nil {
-		fmt.Println("Ошибка :%v", err)
-	}
-	for _, link := range links {
-		fmt.Println(link)
-	}
+	fmt.Println("всего страниц:", len(result))
+	fmt.Println("Время: ", time.Since(start))
 }
