@@ -1,9 +1,11 @@
 package main
 
 import (
+	"bytes"
 	"fmt"
 
 	"github.com/PashaMatsk/crawler/internal/fetcher"
+	"github.com/PashaMatsk/crawler/internal/parser"
 )
 
 func main() {
@@ -13,4 +15,13 @@ func main() {
 		return
 	}
 	fmt.Printf("размер: %d, Статус: %d\n", len(body), status)
+
+	lincs, err := parser.ParserLinks(bytes.NewReader(body))
+	if err != nil {
+		fmt.Println("Ошибка :%v", err)
+	}
+
+	for _, link := range lincs {
+		fmt.Println(link)
+	}
 }
