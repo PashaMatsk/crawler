@@ -9,6 +9,7 @@ import (
 )
 
 func main() {
+
 	body, status, err := fetcher.Fetche("https://books.toscrape.com/")
 	if err != nil {
 		fmt.Printf("Ошибка: %v\n", err)
@@ -16,12 +17,16 @@ func main() {
 	}
 	fmt.Printf("размер: %d, Статус: %d\n", len(body), status)
 
-	lincs, err := parser.ParserLinks(bytes.NewReader(body))
+	links, err := parser.ParserLinks(bytes.NewReader(body))
 	if err != nil {
 		fmt.Println("Ошибка :%v", err)
 	}
 
-	for _, link := range lincs {
+	links, err = parser.NormalizeUrl("https://books.toscrape.com/", links)
+	if err != nil {
+		fmt.Println("Ошибка :%v", err)
+	}
+	for _, link := range links {
 		fmt.Println(link)
 	}
 }
