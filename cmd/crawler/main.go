@@ -9,7 +9,7 @@ import (
 
 func main() {
 	start := time.Now()
-	result := crawler.Crawl("https://books.toscrape.com/", 1)
+	result := crawler.Crawl("https://books.toscrape.com/", 3)
 	for _, p := range result {
 		if p.Error != "" {
 			fmt.Printf("[%d] ОШИБКА %s: %s\n", p.Depth, p.URL, p.Error)
